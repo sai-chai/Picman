@@ -26,7 +26,7 @@ public class GameController : MonoBehaviour {
 	public int dotTotal;
 	public int dotCount;
 	public int score;
-	private bool navMeshJerryRig;
+	private bool isFirstUpdate;
 
 	private void Awake () {
 		if (singleton == null)
@@ -45,11 +45,15 @@ public class GameController : MonoBehaviour {
 		score = 0;
 		dotTotal = 0;
 		_scatter = false;
-		navMeshJerryRig = false;	
+		/* 
+		 * the nonexistence of the NavMesh for the ghosts at the Start phase
+		 * forced me to move the code to the Update phase.
+		 */  
+		isFirstUpdate = false;	
 	}
 
 	void Update(){
-		if(!this.navMeshJerryRig && maze.isReady){
+		if(!this.isFirstUpdate && maze.isReady){
 			Instantiate(pacmanPrefab, 
 						SpawnPosition(pacmanPrefab, maze.pacmanCell.transform),
 						Quaternion.identity);
@@ -72,7 +76,7 @@ public class GameController : MonoBehaviour {
 						Quaternion.identity);
 			ghost.GetComponent<GhostController>().SetColor(3);
 			dotTotal = dotCount;
-			this.navMeshJerryRig = true;
+			this.isFirstUpdate = true;
 			Time.timeScale = 0;
 		}
 
