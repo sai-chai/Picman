@@ -131,7 +131,6 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 if (m_Jump)
                 {
                     m_MoveDir.y = m_JumpSpeed;
-                    PlayJumpSound();
                     m_Jump = false;
                     m_Jumping = true;
                 }
@@ -147,12 +146,6 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
             m_MouseLook.UpdateCursorLock();
             c_speed = 0f;
-        }
-
-
-        private void PlayJumpSound()
-        {
-           
         }
 
 
@@ -270,18 +263,23 @@ namespace UnityStandardAssets.Characters.FirstPerson
             body.AddForceAtPosition(m_CharacterController.velocity*0.1f, hit.point, ForceMode.Impulse);
         }
 
+        /*
+         *  Following functions are customizations of the FirstPersonController
+         *  script packaged with Unity. They all control collisions with the player-character
+         */
         private void collectCoin(GameObject coin){
             m_AudioSource.PlayOneShot(m_CoinSound);
+            Destroy(coin);
             StartCoroutine(m_Global.GetComponent<GameController>().Scatter());
         }
 
         private void collectDot(GameObject dot){
             m_AudioSource.PlayOneShot(m_DotSound);
             Destroy(dot);
-            m_Global.GetComponent<GameController>().dotCount--;
-            m_Global.GetComponent<GameController>().score++;
+            m_Global.GetComponent<GameController>().subtractDot();
+            m_Global.GetComponent<GameController>().addPoints();
         }
-
+        
         private void eatGhost(GameObject ghost){
             m_AudioSource.PlayOneShot(m_ChewingSound);
             Destroy(ghost);
@@ -296,12 +294,10 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 if(m_Global.scatter){
                     eatGhost(other.gameObject);
                 } else {
-                    m_Global.lives--;
+                    m_Global.subtractLife();
                     transform.position = GameObject.Find("Maze").GetComponent<MazeController>().ResetStartCell().transform.position;
                 }
             }
-
-
         }
     }
 }

@@ -17,17 +17,37 @@ public class GameController : MonoBehaviour {
 
 	private static GameController singleton;
 	private bool _scatter;
+	private int _lives;
+	private int dotTotal;
+	private int _dotCount;
+	private int _score;
+	private bool isFirstUpdate;
+
 	public bool scatter{
 		get{
 			return _scatter;
 		}
 	}
-	public int lives;
-	public int dotTotal;
-	public int dotCount;
-	public int score;
-	private bool isFirstUpdate;
 
+	public int lives{
+		get{
+			return lives;
+		}
+	}
+
+	public int dotCount{
+		get{
+			return _dotCount;
+		}
+	}
+
+	public int score{
+		get{
+			return _score;
+		}
+	}
+
+	// Implementation of singleton pattern
 	private void Awake () {
 		if (singleton == null)
 		{
@@ -41,19 +61,21 @@ public class GameController : MonoBehaviour {
 	}
 
 	void Start(){
-		dotCount = 0;
-		score = 0;
+		_dotCount = 0;
+		_score = 0;
 		dotTotal = 0;
 		_scatter = false;
 		/* 
 		 * the nonexistence of the NavMesh for the ghosts at the Start phase
-		 * forced me to move the code to the Update phase.
+		 * forced me to move the code to the Update phase. Hence, isFirstUpdate?
 		 */  
-		isFirstUpdate = false;	
+		isFirstUpdate = true;	
 	}
 
 	void Update(){
-		if(!this.isFirstUpdate && maze.isReady){
+		// On first update, Pacman is spawned on one of the outer cells
+		// Ghosts are spawned on the four centermost cells
+		if(this.isFirstUpdate && maze.isReady){
 			Instantiate(pacmanPrefab, 
 						SpawnPosition(pacmanPrefab, maze.pacmanCell.transform),
 						Quaternion.identity);
@@ -75,11 +97,12 @@ public class GameController : MonoBehaviour {
 						SpawnPosition(ghostPrefab, maze.GetCellAt(c_quarter*3,r_quarter*3).transform),
 						Quaternion.identity);
 			ghost.GetComponent<GhostController>().SetColor(3);
-			dotTotal = dotCount;
-			this.isFirstUpdate = true;
+			dotTotal = _dotCount;
+			this.isFirstUpdate = false;
 			Time.timeScale = 0;
 		}
 
+		// Unpause if any key is pressed on the pause screen.
 		if(Time.timeScale == 0 && directions.gameObject.activeSelf){
 			if(Input.anyKey){
 				directions.gameObject.SetActive(false);
@@ -88,19 +111,27 @@ public class GameController : MonoBehaviour {
 			}
 		}
 
-		if(lives <= 0 && !directions.gameObject.activeSelf && !gameOverText.gameObject.activeSelf){
+		// If you're out of lives and the game directions and gameover messages 
+		// aren't already shown, display the game over text along with the score.
+		if(_lives <= 0 && !directions.gameObject.activeSelf && !gameOverText.gameObject.activeSelf){
 			Time.timeScale = 0;
 			gameOverText.gameObject.SetActive(true);
-			gameOverText.text = gameOverText.text + score.ToString();
+			gameOverText.text = gameOverText.text + _score.ToString();
 		}
-		if(score >= dotTotal && !directions.gameObject.activeSelf && !wonText.gameObject.activeSelf){
+
+		// If you've beat the game and all the dots are collected, show the game won text.
+		if(_score >= dotTotal && !directions.gameObject.activeSelf && !wonText.gameObject.activeSelf){
 			Time.timeScale = 0;
 			wonText.gameObject.SetActive(true);
 		}
-		dotCounter.text = "Dots: " + score.ToString() + "/" + dotTotal.ToString();
-		lifeCounter.text = "Lives: " + lives;
+
+		// Update dot and life counters
+		dotCounter.text = "Dots: " + _score.ToString() + "/" + dotTotal.ToString();
+		lifeCounter.text = "Lives: " + _lives;
 	}
 
+	// The local y-positions of prefabs are already set to the proper height
+	// All that's needed are the xz-coordinates
 	private Vector3 SpawnPosition(GameObject prefab, Transform location){
 		return new Vector3(location.position.x, prefab.transform.position.y, location.position.z);
 	}
@@ -111,5 +142,21 @@ public class GameController : MonoBehaviour {
 		_scatter = false;
 	}
 
+	// Methods that limit setting of private fields to incrementing and decrementing
+	public void subtractLife() {
+		_lives--;
+	}
+
+	public void addDot() {
+		_dotCount++;
+	}
 	
+	public void subtractDot() {
+		_dotCount--;
+	}
+
+	public void addPoints() {
+		_score++;
+	}
+
 }

@@ -15,7 +15,6 @@ public class MazeController : MonoBehaviour {
 	[SerializeField] public int rows;
 	[SerializeField] private GameObject mazeCellPrefab;
 
-	// Use this for initialization
 	void Start () {
 		spawns = new int[columns*rows];
 		for(int i = 0; i < spawns.Length; i++){
@@ -25,15 +24,20 @@ public class MazeController : MonoBehaviour {
 		random = new System.Random();
 		Shuffle<int>(spawns);
 		adj = new ArrayList[columns,rows];
+		// Generation of a blank maze with no edges
+		// note: z is used for columns and x for rows because those are the axes 
+		// in which the two coordinates sit.
 		for(int z = 0; z < adj.GetLength(0); z++){
 			for(int x = 0; x < adj.GetLength(1); x++){
 				adj[z,x] = new ArrayList();
 				GameObject temp = Instantiate(mazeCellPrefab, new Vector3(x*2f+1f, 0f, z*2f+1f), Quaternion.identity);
 				temp.transform.parent = transform;
 				temp.GetComponent<MazeCellController>().SetCell(z, x);
+				// Addition of the origin cell to each empty arraylist in the adjacency matrix
 				adj[z,x].Insert(0, temp);
 			}
 		}
+		// Filling of adjacency matrix. 
 		for(int z = 0; z < adj.GetLength(0); z++){
 			for(int x = 0; x < adj.GetLength(1); x++){
 				if(x > 0){
@@ -52,6 +56,8 @@ public class MazeController : MonoBehaviour {
 		}
 		pacmanCell = GetStartCell();
 		int j = 0;
+		// coins/dots are spawned in each cell
+		// j is used to give each cell a different spawn number from the shuffled spawns array
 		for(int z = 0; z < adj.GetLength(0); z++){
 			for(int x = 0; x < adj.GetLength(1); x++){
 				if((GameObject) adj[z,x][0] != pacmanCell){
@@ -65,13 +71,16 @@ public class MazeController : MonoBehaviour {
 
 	void Update(){
 		if(!isReady){
-			//bake navmesh
+			// NavMesh baking in the Start call caused a race condition so I moved it to update
+			// Need .NET 5+ to use async/await, update to come
 			NavMeshSurface surface = gameObject.GetComponent<NavMeshSurface>();
 			surface.BuildNavMesh();
 			isReady = true;
 		}
 	}
 
+	// The actual recursive maze traversal algorithm. 
+	// Adjacent cells are visited in a random order.
 	private void Generate(MazeCellController current){
 		current.Visit();
 		ArrayList currentList = adj[current.column,current.row];
@@ -112,14 +121,8 @@ public class MazeController : MonoBehaviour {
         }
     }
 
-	public int GetRandom(){
-		return random.Next();
-	}
-
-	public int GetRandom(int max){
-		return random.Next(max);
-	}
-
+	// GetStartCell defines the starting point for the player-character
+	// as one of the outermost cells 
 	private GameObject GetStartCell(){
 		int column = random.Next(adj.GetLength(0));
 		int row = -1;

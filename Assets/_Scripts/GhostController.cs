@@ -13,7 +13,6 @@ public class GhostController : MonoBehaviour {
 	private int colorIndex;
 	private Vector3 originalPosition;
 
-	// Use this for initialization
 	void Start () {
 		originalPosition = new Vector3(transform.position.x, transform.position.y, transform.position.z);
 		agent = gameObject.GetComponent<NavMeshAgent>();
@@ -22,18 +21,19 @@ public class GhostController : MonoBehaviour {
 		target = GameObject.FindWithTag("Pacman").transform;
 	}
 	
-	// Update is called once per frame
 	void Update () {
 		if(!global.scatter){
 			agent.destination = target.position;
 		} else{
 			if(!body.GetComponent<MeshRenderer>().material.name.Equals("GhostScatter")){
-				StartCoroutine(Scatter());
+				StartCoroutine(Scatter()); 
 			}
 			agent.destination = originalPosition;
 		}
 	}
 
+	// Entirely separate from the GameController's Scatter coroutine
+	// This one sets the ghost's color
 	private IEnumerator Scatter(){
 		SetColor(4);
 		yield return new WaitForSeconds(12.5f);

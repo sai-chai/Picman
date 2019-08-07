@@ -6,14 +6,9 @@ public class CoinController : MonoBehaviour {
 
 	public float speed;
 	
-	// Update is called once per frame
 	void Update () {
+		// Rotates the coin. Coin's local xz-plane is the game's xy-plane.
+		// Hence, the use of vector 0,1,0.
 		transform.Rotate(Vector3.up, speed * Time.deltaTime);
-	}
-
-	void OnTriggerEnter(Collider other){
-		if(other.gameObject.CompareTag("Pacman")){
-			Destroy(gameObject);
-		}
 	}
 }
