@@ -108,6 +108,8 @@ public class GameController : MonoBehaviour {
 				directions.gameObject.SetActive(false);
 				anyKey.gameObject.SetActive(false);
 				Time.timeScale = 1;
+				Debug.Log(_lives.ToString());
+				return;
 			}
 		}
 

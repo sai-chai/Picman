@@ -38,6 +38,9 @@ public class MazeCellController : MonoBehaviour {
 	// Triggers the actual spawning of coins or dots in the cell based on 
 	// the spawn number it's assigned.
 	public void SetSpawn(int spawn){
+		global = GameObject
+					.FindWithTag("GameController")
+					.GetComponent<GameController>();
 		if(isCoin(spawn)){
 			Instantiate(
 				coinPrefab, 
