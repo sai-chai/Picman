@@ -13,6 +13,9 @@ public class GhostController : MonoBehaviour {
 	private int colorIndex;
 	private Vector3 originalPosition;
 
+	private const float DefaultSpeed = 1.6F;
+	private const float ScatterSpeed = 1.1F;
+
 	void Start () {
 		originalPosition = new Vector3(transform.position.x, transform.position.y, transform.position.z);
 		agent = gameObject.GetComponent<NavMeshAgent>();
@@ -36,7 +39,9 @@ public class GhostController : MonoBehaviour {
 	// This one sets the ghost's color
 	private IEnumerator Scatter(){
 		SetColor(4);
+		agent.speed = ScatterSpeed;
 		yield return new WaitForSeconds(12.5f);
+		agent.speed = DefaultSpeed;
 		SetColor(colorIndex);
 	}
 

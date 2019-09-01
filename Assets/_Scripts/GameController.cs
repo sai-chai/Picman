@@ -22,6 +22,7 @@ public class GameController : MonoBehaviour {
 	private int _dotCount;
 	private int _score;
 	private bool isFirstUpdate;
+	private const int StartingLives = 5;
 
 	public bool scatter{
 		get{
@@ -64,6 +65,7 @@ public class GameController : MonoBehaviour {
 		_dotCount = 0;
 		_score = 0;
 		dotTotal = 0;
+		_lives = StartingLives;
 		_scatter = false;
 		/* 
 		 * the nonexistence of the NavMesh for the ghosts at the Start phase
@@ -108,7 +110,6 @@ public class GameController : MonoBehaviour {
 				directions.gameObject.SetActive(false);
 				anyKey.gameObject.SetActive(false);
 				Time.timeScale = 1;
-				Debug.Log(_lives.ToString());
 				return;
 			}
 		}
@@ -157,8 +158,20 @@ public class GameController : MonoBehaviour {
 		_dotCount--;
 	}
 
-	public void addPoints() {
+	public void addPoint() {
 		_score++;
+	}
+
+	public void addCoinPoints() {
+		_score += 5;
+	}
+
+	public void addGhostPoints() {
+		_score += 10;
+	}
+
+	public void addLife() {
+		_lives++;
 	}
 
 }

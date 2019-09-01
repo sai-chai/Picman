@@ -270,6 +270,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
         private void collectCoin(GameObject coin){
             m_AudioSource.PlayOneShot(m_CoinSound);
             Destroy(coin);
+            m_Global.addCoinPoints();
             StartCoroutine(m_Global.GetComponent<GameController>().Scatter());
         }
 
@@ -277,12 +278,14 @@ namespace UnityStandardAssets.Characters.FirstPerson
             m_AudioSource.PlayOneShot(m_DotSound);
             Destroy(dot);
             m_Global.GetComponent<GameController>().subtractDot();
-            m_Global.GetComponent<GameController>().addPoints();
+            m_Global.GetComponent<GameController>().addPoint();
         }
         
         private void eatGhost(GameObject ghost){
             m_AudioSource.PlayOneShot(m_ChewingSound);
             Destroy(ghost);
+            m_Global.addGhostPoints();
+            m_Global.addLife();
         }
 
         void OnTriggerEnter(Collider other){
