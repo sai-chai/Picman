@@ -2,6 +2,7 @@
 ### Rudimentary 3D maze navigation game, complete with ghosts to run from, 'dots' to eat, and coins that allow you to have a go at your enemies.
 Rights disclaimer: this game is a derivative work of Pac-Man®, rights reserved by Bandai Namco Ent. It was created for educational purposes under the conditions of Fair Use, pursuant to 17 U.S.C. § 107, related admendments, and case law.
 ## Demo
+(YouTube video link)
 [![Picman Demo](http://img.youtube.com/vi/YcfnMLzye-E/0.jpg)](https://www.youtube.com/watch?v=YcfnMLzye-E "Picman Demo")
 
 ## Maze Generation
