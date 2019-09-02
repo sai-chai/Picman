@@ -2,8 +2,7 @@
 ### Rudimentary 3D maze navigation game, complete with ghosts to run from, 'dots' to eat, and coins that allow you to have a go at your enemies.
 Rights disclaimer: this game is a derivative work of Pac-Man®, rights reserved by Bandai Namco Ent. It was created for educational purposes under the conditions of Fair Use, pursuant to 17 U.S.C. § 107, related admendments, and case law.
 ## Demo
-(YouTube video link)
-[![Picman Demo](http://img.youtube.com/vi/YcfnMLzye-E/0.jpg)](https://www.youtube.com/watch?v=YcfnMLzye-E "Picman Demo")
+[![Picman Demo](http://img.youtube.com/vi/YcfnMLzye-E/0.jpg)](https://www.youtube.com/watch?v=YcfnMLzye-E "Picman Demo")(YouTube video link)
 
 ## Maze Generation
 Uses a DFS algorithm to randomly generate the edges of the maze. A sequence of numbers from 0 to n-1, where n is the total number of cells, is shuffled randomly. Once all cells are generated and edges are determined, each cell is assigned a spawn number from the shuffled sequence, a modulus of which is used by the MazeCell instance to determine whether the cell will spawn a coin or dot. Difficulty rises exponentially with maze size, not just because of size alone, but also the scarcity of coins.
